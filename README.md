@@ -1,101 +1,180 @@
-<div align="center">
+# 🕵️‍♂️ File Type Identifier & Malware Hint Scanner — Hacker Edition
 
-File Type Identifier & Malware Hint Scanner 🕵️‍♂️🔍
+![repo-size](https://img.shields.io/badge/Asura--Lord-File--Type--Identifier-blue) ![python](https://img.shields.io/badge/python-3.10%2B-brightgreen) ![streamlit](https://img.shields.io/badge/streamlit-ready-orange) ![license](https://img.shields.io/badge/license-MIT-green)
 
-A Python tool to identify a file's true type by reading its magic bytes and scan for potential malware indicators.
+> _"Hackers hide malware in plain sight. This tool reveals the truth."_
 
-</div>
+---
 
-🌟 Overview
+## Table of Contents
+- [Overview](#overview)  
+- [Why This Matters](#why-this-matters)  
+- [Features](#features)  
+- [Quick Start (run in ~60s)](#quick-start-run-in-60s)  
+- [Installation (Windows / Linux / macOS)](#installation-windows--linux--macos)  
+- [Usage & Examples](#usage--examples)  
+- [How it Detects Suspicious Files](#how-it-detects-suspicious-files)  
+- [Project Structure](#project-structure)  
+- [Contributing](#contributing)  
+- [Security & Responsible Use](#security--responsible-use)  
+- [License](#license)  
+- [Live Preview & Screenshots](#live-preview--screenshots)  
+- [Contact & Support](#contact--support)
 
-This tool is designed to help cybersecurity enthusiasts, developers, and analysts quickly verify file integrity. It goes beyond simple file extensions by analyzing the file's header (magic bytes) to determine its actual type. It also flags suspicious characteristics, such as mismatched extensions, which can be an indicator of a disguised malicious file.
+---
 
-Add a screenshot or GIF of your application in action.
+## Overview
+A compact Python + Streamlit tool that reads the **magic bytes** (file headers) to determine a file's real type and flags mismatches with the visible extension. Great for triage, teaching digital forensics basics, and demoing how attackers disguise payloads.
 
-✨ Key Features
+---
 
-🔍 Magic Byte Analysis: Accurately detects a file's type, ignoring the extension.
+## Why This Matters
+Attackers often hide harmful executables behind benign-looking names (e.g. `invoice.pdf.exe`). OSes and users rely on extensions, but **true identity** is in the file header. This tool mimics a basic forensic check used by analysts to spot those tricks.
 
-⚠️ Mismatch Detection: Flags files where the extension doesn't match the true file type.
+---
 
-** laajiro File Support**: Supports a wide range of common file types like .exe, .dll, .jpg, .png, .pdf, .zip, and more.
+## Features
+- Detects file type using magic bytes
+- Flags files when extension ≠ detected header type
+- Small, editable signature DB for common formats (JPG, PNG, PDF, EXE, ZIP, etc.)
+- Optional SHA256/MD5 hashing for further offline lookup
+- Lightweight CLI + Streamlit GUI (fast & minimal)
+- Educational notes about common obfuscation techniques
 
-🔑 Hash Computation: Optionally computes MD5 and SHA256 hashes for further analysis or verification on platforms like VirusTotal.
+---
 
-🖥️ User-Friendly Interface: Built with Streamlit for an easy-to-use web interface.
+## Quick Start (run in ~60s)
+Clone, create venv, install, run:
 
-🛠️ Tech Stack
-
-Language: Python 3.x
-
-Core Libraries: os, hashlib, struct
-
-Web Framework: streamlit
-
-🚀 Getting Started
-
-Follow these steps to get the project up and running on your local machine.
-
-Prerequisites
-
-Python 3.7 or newer
-
-Git
-
-Installation & Usage
-
-Clone the Repository:
-
-git clone [https://github.com/Asura-Lord/File-Type-Identifier.git](https://github.com/Asura-Lord/File-Type-Identifier.git)
+**Windows (PowerShell)**  
+```powershell
+git clone https://github.com/Asura-Lord/File-Type-Identifier.git
 cd File-Type-Identifier
-
-
-Create and Activate a Virtual Environment:
-
-On Windows:
-
 python -m venv .venv
-.\.venv\Scripts\activate
+.\\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip setuptools wheel
+pip install -r requirements.txt
+python -m streamlit run app.py
+Linux / macOS (Bash)
 
-
-On macOS/Linux:
-
+bash
+Copy code
+git clone https://github.com/Asura-Lord/File-Type-Identifier.git
+cd File-Type-Identifier
 python3 -m venv .venv
 source .venv/bin/activate
-
-
-Install Dependencies:
-
+python3 -m pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
+python3 -m streamlit run app.py
+Open the local URL printed by Streamlit (usually http://localhost:8501).
 
+Installation (notes)
+Keep the project lightweight: only install streamlit if you want the GUI. The core scanner uses only Python standard libraries.
 
-Run the Application:
+Add .venv/ to .gitignore to avoid pushing your virtual environment.
 
-streamlit run app.py
+.gitignore example:
 
+markdown
+Copy code
+.venv/
+__pycache__/
+*.pyc
+temp_*
+scans.db
+logs.json
+Usage & Examples
+Upload a file in the Streamlit UI or pass a path to the CLI script.
 
-Your browser should open with the application running!
+The tool displays:
 
-🤝 Contributing
+File name
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
+Declared extension
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Detected (header) type
 
-Fork the Project
+Status: Safe or ⚠️ Suspicious File!
 
-Create your Feature Branch (git checkout -b feature/AmazingFeature)
+Optional: SHA256 hash for external lookup
 
-Commit your Changes (git commit -m 'Add some AmazingFeature')
+Example table:
 
-Push to the Branch (git push origin feature/AmazingFeature)
+File Name	Extension	Detected	Status
+report.pdf	pdf	PDF	✅ Safe
+cat.jpg	jpg	PE/EXE	⚠️ Suspicious File!
 
-Open a Pull Request
+How it Detects Suspicious Files
+Reads first 4–16 bytes (magic bytes) of a file.
 
-📄 License
+Tries to match those bytes with known signatures in a small DB.
 
-This project is distributed under the MIT License. See LICENSE for more information.
+Extracts file extension from filename.
 
-<div align="center">
-Made with ❤️ by Asura-Lord
-</div>
+If extension and detected type mismatch → mark as Suspicious.
+
+(Optional) Compute MD5/SHA256 for further offline checks (VirusTotal etc. — API usage should be consented).
+
+Project Structure
+graphql
+Copy code
+File-Type-Identifier/
+├─ app.py             # Streamlit front-end (UI)
+├─ file_scan.py       # Core scanner logic (magic bytes, hashing)
+├─ signatures.json    # (optional) external signatures DB
+├─ requirements.txt   # Minimal deps (streamlit)
+├─ README.md
+└─ .gitignore
+Example minimal requirements.txt:
+
+ini
+Copy code
+streamlit==1.38.0
+TIP: If you only want CLI, you don't need to install anything beyond Python 3.8+.
+
+Contributing
+Contributions welcome: add signatures, improve detection, add CLI flags, or make a small tests suite.
+
+How to contribute:
+
+Fork the repo
+
+Create a branch (git checkout -b feature/x)
+
+Add tests where applicable
+
+Open a Pull Request with a clear description and security considerations
+
+Security & Responsible Use
+This tool does not execute files — it only reads bytes and computes hashes.
+
+Never open suspicious files on your production host. Use VMs or sandboxes for deeper analysis.
+
+Handle scan logs and file paths as potentially sensitive information.
+
+If integrating external APIs (VirusTotal, Hybrid Analysis), respect API terms and user privacy.
+
+License
+MIT License — 2025 Asura-Lord
+(See LICENSE file in repo for full text.)
+
+Live Preview & Screenshots
+Live Preview: Paste your Streamlit cloud link here when deployed (e.g. https://share.streamlit.io/your-user/your-repo)
+
+Screenshots: Add screenshots to /docs/ or root and reference them here:
+
+markdown
+Copy code
+![UI Screenshot](docs/screenshot_main.png)
+![Suspicious Example](docs/screenshot_suspicious.png)
+Contact & Support
+Author: Asura-Lord — https://github.com/Asura-Lord
+
+Issues / feature requests: https://github.com/Asura-Lord/File-Type-Identifier/issues
+
+⚠️ Final Note (Hacker style):
+Weak file checks are an easy win for attackers. Use this tool to triage downloads and attachments — always verify before you open. Keep it legal, keep it isolated, keep it dangerous. 🖤
+
+makefile
+Copy code
+::contentReference[oaicite:0]{index=0}
