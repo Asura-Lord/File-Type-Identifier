@@ -1,7 +1,7 @@
 
 # 🕵️‍♂️ File Type Identifier & Malware Hint Scanner — Hacker Edition
 
-![repo](https://img.shields.io/badge/Asura--Lord-File--Type--Identifier-blue) ![python](https://img.shields.io/badge/python-3.10%2B-brightgreen) ![streamlit](https://img.shields.io/badge/streamlit-1.38.0-orange) ![license](https://img.shields.io/badge/license-MIT-green)
+![repo](https://img.shields.io/badge/Asura--Lord-File--Type--Identifier-blue) ![python](https://img.shields.io/badge/python-3.10%2B-brightgreen) ![streamlit](https://img.shields.io/badge/streamlit-1.38.0-orange) ![license](https://img.shields.io/badge/license-MIT-green) [![Live demo](https://img.shields.io/badge/Live-Demo-blue?logo=streamlit)](https://file-type-identifier.streamlit.app/)
 
 > **Hackers hide malware in plain sight. This tool reveals the truth.**
 
@@ -269,6 +269,7 @@ Issues / feature requests: [https://github.com/Asura-Lord/File-Type-Identifier/i
 ---
 
 > **Final note:** this tool is a fast, local triage helper. Use it to catch obvious disguises and to gather hashes for follow-up. Keep it legal, keep it isolated, keep it dangerous. 🖤
+
 
 
 
