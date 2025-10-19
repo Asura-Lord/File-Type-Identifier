@@ -1,6 +1,4 @@
-Sure — I cleaned, polished and formatted your README into a single ready-to-copy `README.md`. It’s compact, attractive, practical, and keeps the “hacker” vibe while giving exact commands (clone → venv → install → run) for Windows and Linux/macOS. Just copy-paste the whole block below into your repo’s `README.md`.
 
-````markdown
 # 🕵️‍♂️ File Type Identifier & Malware Hint Scanner — Hacker Edition
 
 ![repo](https://img.shields.io/badge/Asura--Lord-File--Type--Identifier-blue) ![python](https://img.shields.io/badge/python-3.10%2B-brightgreen) ![streamlit](https://img.shields.io/badge/streamlit-1.38.0-orange) ![license](https://img.shields.io/badge/license-MIT-green)
@@ -271,4 +269,5 @@ Issues / feature requests: [https://github.com/Asura-Lord/File-Type-Identifier/i
 ---
 
 > **Final note:** this tool is a fast, local triage helper. Use it to catch obvious disguises and to gather hashes for follow-up. Keep it legal, keep it isolated, keep it dangerous. 🖤
+
 
