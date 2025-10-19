@@ -1,20 +1,25 @@
+Sure — I cleaned, polished and formatted your README into a single ready-to-copy `README.md`. It’s compact, attractive, practical, and keeps the “hacker” vibe while giving exact commands (clone → venv → install → run) for Windows and Linux/macOS. Just copy-paste the whole block below into your repo’s `README.md`.
+
+````markdown
 # 🕵️‍♂️ File Type Identifier & Malware Hint Scanner — Hacker Edition
 
-![repo-size](https://img.shields.io/badge/Asura--Lord-File--Type--Identifier-blue) ![python](https://img.shields.io/badge/python-3.10%2B-brightgreen) ![streamlit](https://img.shields.io/badge/streamlit-ready-orange) ![license](https://img.shields.io/badge/license-MIT-green)
+![repo](https://img.shields.io/badge/Asura--Lord-File--Type--Identifier-blue) ![python](https://img.shields.io/badge/python-3.10%2B-brightgreen) ![streamlit](https://img.shields.io/badge/streamlit-1.38.0-orange) ![license](https://img.shields.io/badge/license-MIT-green)
 
-> _"Hackers hide malware in plain sight. This tool reveals the truth."_
+> **Hackers hide malware in plain sight. This tool reveals the truth.**
 
 ---
 
-## Table of Contents
+## 🔭 Table of Contents
 - [Overview](#overview)  
 - [Why This Matters](#why-this-matters)  
 - [Features](#features)  
-- [Quick Start (run in ~60s)](#quick-start-run-in-60s)  
-- [Installation (Windows / Linux / macOS)](#installation-windows--linux--macos)  
+- [Quick Start (60s)](#quick-start-60s)  
+- [Installation Notes & Commands](#installation-notes--commands)  
 - [Usage & Examples](#usage--examples)  
-- [How it Detects Suspicious Files](#how-it-detects-suspicious-files)  
+- [How It Detects Suspicious Files](#how-it-detects-suspicious-files)  
+- [Signatures DB (format)](#signatures-db-format)  
 - [Project Structure](#project-structure)  
+- [Requirements & .gitignore](#requirements--gitignore)  
 - [Contributing](#contributing)  
 - [Security & Responsible Use](#security--responsible-use)  
 - [License](#license)  
@@ -24,157 +29,246 @@
 ---
 
 ## Overview
-A compact Python + Streamlit tool that reads the **magic bytes** (file headers) to determine a file's real type and flags mismatches with the visible extension. Great for triage, teaching digital forensics basics, and demoing how attackers disguise payloads.
+A compact Python tool (CLI + optional Streamlit GUI) that reads **magic bytes** (file header) and identifies the file’s real type. If a file’s visible extension and its header disagree, it flags the file as **suspicious** for safe triage and investigation.
+
+This is fast, local, and educational — ideal for triage, phishing analysis, and learning how attackers disguise payloads.
 
 ---
 
 ## Why This Matters
-Attackers often hide harmful executables behind benign-looking names (e.g. `invoice.pdf.exe`). OSes and users rely on extensions, but **true identity** is in the file header. This tool mimics a basic forensic check used by analysts to spot those tricks.
+Attackers frequently rename malware to look harmless (e.g., `invoice.pdf.exe`). Operating systems often rely on extensions, while the **true identity** lives in the file header (magic bytes). This tool surfaces mismatches so you can investigate in an isolated environment.
 
 ---
 
 ## Features
-- Detects file type using magic bytes
-- Flags files when extension ≠ detected header type
-- Small, editable signature DB for common formats (JPG, PNG, PDF, EXE, ZIP, etc.)
-- Optional SHA256/MD5 hashing for further offline lookup
-- Lightweight CLI + Streamlit GUI (fast & minimal)
-- Educational notes about common obfuscation techniques
+- Detects file type via magic-bytes (header signatures)  
+- Flags files where `extension ≠ detected type`  
+- Small, editable **`signatures.json`** DB for common formats (JPG, PNG, PDF, EXE, ZIP, etc.)  
+- Optional SHA256 / MD5 hashing for offline lookups (VirusTotal)  
+- Lightweight CLI and optional Streamlit GUI for visual triage  
+- Optional heuristics: entropy check, double-extension detection, archive inner-file check  
 
 ---
 
 ## Quick Start (run in ~60s)
-Clone, create venv, install, run:
 
-**Windows (PowerShell)**  
+> Clone → create venv → install → run (Streamlit GUI or CLI)
+
+### Windows (PowerShell)
 ```powershell
+# 1) clone repo
 git clone https://github.com/Asura-Lord/File-Type-Identifier.git
 cd File-Type-Identifier
+
+# 2) create & activate venv
 python -m venv .venv
-.\\.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
+
+# 3) upgrade pip + install minimal deps (only Streamlit needed for GUI)
 python -m pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
-python -m streamlit run app.py
-Linux / macOS (Bash)
 
-bash
-Copy code
+# 4) run GUI (recommended)
+python -m streamlit run app.py
+
+# OR run CLI
+python file_scan.py /path/to/file_or_folder --hash sha256
+````
+
+### Linux / macOS (Bash)
+
+```bash
+# 1) clone
 git clone https://github.com/Asura-Lord/File-Type-Identifier.git
 cd File-Type-Identifier
+
+# 2) venv
 python3 -m venv .venv
 source .venv/bin/activate
+
+# 3) upgrade + install
 python3 -m pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
+
+# 4) run GUI
 python3 -m streamlit run app.py
-Open the local URL printed by Streamlit (usually http://localhost:8501).
 
-Installation (notes)
-Keep the project lightweight: only install streamlit if you want the GUI. The core scanner uses only Python standard libraries.
+# OR CLI
+python3 file_scan.py /path/to/file_or_folder --hash sha256
+```
 
-Add .venv/ to .gitignore to avoid pushing your virtual environment.
+> If `streamlit` is not found in PowerShell, use `python -m streamlit run app.py` to avoid PATH issues.
 
-.gitignore example:
+---
 
-markdown
-Copy code
+## Installation Notes
+
+* The **core scanner** uses only Python standard libraries. Install `streamlit` only for GUI.
+* Add `.venv/` to `.gitignore`.
+* Keep `signatures.json` small and specific to reduce false positives.
+
+Example `.gitignore`:
+
+```text
 .venv/
 __pycache__/
 *.pyc
 temp_*
 scans.db
 logs.json
-Usage & Examples
-Upload a file in the Streamlit UI or pass a path to the CLI script.
+```
 
-The tool displays:
+---
 
-File name
+## Usage & Examples
 
-Declared extension
+### CLI
 
-Detected (header) type
+```bash
+# scan a single file
+python file_scan.py /path/to/file.exe
 
-Status: Safe or ⚠️ Suspicious File!
+# scan a folder recursively and output CSV
+python file_scan.py ./downloads --recursive --output scans.csv --hash sha256
+```
 
-Optional: SHA256 hash for external lookup
+### Streamlit GUI
 
-Example table:
+* Run `python -m streamlit run app.py`
+* Upload a file or point to a folder
+* View: file name, declared extension, detected header type, SHA256 (if requested), entropy and warnings
 
-File Name	Extension	Detected	Status
-report.pdf	pdf	PDF	✅ Safe
-cat.jpg	jpg	PE/EXE	⚠️ Suspicious File!
+Example result table:
 
-How it Detects Suspicious Files
-Reads first 4–16 bytes (magic bytes) of a file.
+| File Name  | Extension | Detected | Status              |
+| ---------- | --------- | -------- | ------------------- |
+| report.pdf | pdf       | PDF      | ✅ Safe              |
+| cat.jpg    | jpg       | PE/EXE   | ⚠️ Suspicious File! |
 
-Tries to match those bytes with known signatures in a small DB.
+---
 
-Extracts file extension from filename.
+## How It Detects Suspicious Files
 
-If extension and detected type mismatch → mark as Suspicious.
+1. **Read magic bytes** (first 4–16 bytes).
+2. **Match against signatures** in `signatures.json`.
+3. **Extract extension** from filename.
+4. If `extension != detected_type` → mark as **Suspicious**.
+5. Optional hints: compute **SHA256/MD5**, run **entropy** heuristic, inspect contained files in archives.
 
-(Optional) Compute MD5/SHA256 for further offline checks (VirusTotal etc. — API usage should be consented).
+**Important**: this is a triage tool — it does **not** execute files and is **not** a full AV replacement.
 
-Project Structure
-graphql
-Copy code
+---
+
+## Signatures DB (format)
+
+`signatures.json` is a small JSON list of signature objects. Example:
+
+```json
+[
+  {
+    "label": "PDF",
+    "extensions": ["pdf"],
+    "magic": "25504446",
+    "offset": 0
+  },
+  {
+    "label": "PNG",
+    "extensions": ["png"],
+    "magic": "89504E470D0A1A0A",
+    "offset": 0
+  },
+  {
+    "label": "PE/EXE",
+    "extensions": ["exe", "dll"],
+    "magic": "4D5A",
+    "offset": 0
+  }
+]
+```
+
+* `magic` is a hex string (uppercase/lowercase OK).
+* `offset` is where the magic bytes begin (usually 0).
+* Keep entries focused to reduce collisions and mis-identification.
+
+---
+
+## Project Structure
+
+```
 File-Type-Identifier/
-├─ app.py             # Streamlit front-end (UI)
-├─ file_scan.py       # Core scanner logic (magic bytes, hashing)
-├─ signatures.json    # (optional) external signatures DB
-├─ requirements.txt   # Minimal deps (streamlit)
+├─ app.py             # Streamlit front-end
+├─ file_scan.py       # Core scanner (CLI + helpers)
+├─ signatures.json    # External signatures DB (editable)
+├─ requirements.txt   # Minimal dependencies (streamlit)
 ├─ README.md
 └─ .gitignore
-Example minimal requirements.txt:
+```
 
-ini
-Copy code
+---
+
+## Requirements
+
+Minimal `requirements.txt` (only needed for GUI):
+
+```
 streamlit==1.38.0
-TIP: If you only want CLI, you don't need to install anything beyond Python 3.8+.
+pefile==2024.12.31    # optional: if PE inspection is included
+```
 
-Contributing
-Contributions welcome: add signatures, improve detection, add CLI flags, or make a small tests suite.
+> If you only run CLI and basic checks, you may not need any extra packages.
+
+---
+
+## Contributing
+
+Contributions are welcome:
+
+* Improve or add signatures to `signatures.json`
+* Add CLI flags or output formats (JSON/CSV)
+* Add tests and CI (pytest)
+* Implement optional VirusTotal hash lookup (only with API key and consent)
 
 How to contribute:
 
-Fork the repo
+1. Fork → `git checkout -b feature/…`
+2. Code + tests
+3. Open PR with description and security implications
 
-Create a branch (git checkout -b feature/x)
+---
 
-Add tests where applicable
+## Security & Responsible Use
 
-Open a Pull Request with a clear description and security considerations
+* The tool **does not execute files**. Still: **do not open suspicious files on production hosts**. Use isolated VMs or sandboxes.
+* Treat logs and paths as sensitive data. Do not upload suspicious samples to public services without permission.
+* If integrating VirusTotal or similar, follow API rules and user consent.
 
-Security & Responsible Use
-This tool does not execute files — it only reads bytes and computes hashes.
+---
 
-Never open suspicious files on your production host. Use VMs or sandboxes for deeper analysis.
+## License
 
-Handle scan logs and file paths as potentially sensitive information.
-
-If integrating external APIs (VirusTotal, Hybrid Analysis), respect API terms and user privacy.
-
-License
 MIT License — 2025 Asura-Lord
-(See LICENSE file in repo for full text.)
+(See `LICENSE` file for full text)
 
-Live Preview & Screenshots
-Live Preview: Paste your Streamlit cloud link here when deployed (e.g. https://share.streamlit.io/your-user/your-repo)
+---
 
-Screenshots: Add screenshots to /docs/ or root and reference them here:
+## Live Preview & Screenshots
 
-markdown
-Copy code
-![UI Screenshot](docs/screenshot_main.png)
+* Deploy to Streamlit Cloud (optional) and paste the link here when available.
+* Add screenshots to `docs/` and reference them:
+
+```markdown
+![Main UI](docs/screenshot_main.png)
 ![Suspicious Example](docs/screenshot_suspicious.png)
-Contact & Support
-Author: Asura-Lord — https://github.com/Asura-Lord
+```
 
-Issues / feature requests: https://github.com/Asura-Lord/File-Type-Identifier/issues
+---
 
-⚠️ Final Note (Hacker style):
-Weak file checks are an easy win for attackers. Use this tool to triage downloads and attachments — always verify before you open. Keep it legal, keep it isolated, keep it dangerous. 🖤
+## Contact & Support
 
-makefile
-Copy code
-::contentReference[oaicite:0]{index=0}
+Author: **Asura-Lord** — [https://github.com/Asura-Lord](https://github.com/Asura-Lord)
+Issues / feature requests: [https://github.com/Asura-Lord/File-Type-Identifier/issues](https://github.com/Asura-Lord/File-Type-Identifier/issues)
+
+---
+
+> **Final note:** this tool is a fast, local triage helper. Use it to catch obvious disguises and to gather hashes for follow-up. Keep it legal, keep it isolated, keep it dangerous. 🖤
+
