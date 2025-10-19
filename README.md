@@ -251,12 +251,12 @@ MIT License — 2025 Asura-Lord
 
 ## Live Preview & Screenshots
 
-* Deploy to Streamlit Cloud (optional) and paste the link here when available.
-* Add screenshots to `docs/` and reference them:
+<img width="1146" height="821" alt="Screenshot 2025-10-18 170353" src="https://github.com/user-attachments/assets/42bceadc-2389-48dd-8671-e0250432268f" />
+
+
 
 ```markdown
-![Main UI](docs/screenshot_main.png)
-![Suspicious Example](docs/screenshot_suspicious.png)
+https://file-type-identifier.streamlit.app/
 ```
 
 ---
@@ -269,5 +269,6 @@ Issues / feature requests: [https://github.com/Asura-Lord/File-Type-Identifier/i
 ---
 
 > **Final note:** this tool is a fast, local triage helper. Use it to catch obvious disguises and to gather hashes for follow-up. Keep it legal, keep it isolated, keep it dangerous. 🖤
+
 
 
